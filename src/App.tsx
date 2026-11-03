@@ -1,4 +1,5 @@
 import { lazy, Suspense, useCallback, useRef, useState } from 'react'
+import { AboutPanel } from '@/components/AboutPanel'
 import { ProjectsPanel } from '@/components/ProjectsPanel'
 import { SceneBoundary } from '@/components/SceneBoundary'
 import styles from './App.module.css'
@@ -8,22 +9,26 @@ const Studio = lazy(() => import('@/scenes/Studio'))
 export default function App() {
   const [scene, setScene] = useState<'loading' | 'ready' | 'failed'>('loading')
   const [reset, setReset] = useState(0)
-  const [panelOpen, setPanelOpen] = useState(false)
+  const [panel, setPanel] = useState<'projects' | 'about' | null>(null)
   const [selected, setSelected] = useState(0)
   const [playback, setPlayback] = useState<'monitor' | 'panel' | null>(null)
   const projectsButton = useRef<HTMLButtonElement>(null)
+  const aboutButton = useRef<HTMLButtonElement>(null)
+  const panelOrigin = useRef<HTMLButtonElement | null>(null)
   const sceneReady = useCallback(() => setScene('ready'), [])
   const sceneFailed = useCallback(() => setScene('failed'), [])
 
-  const openProjects = () => {
+  const openPanel = (section: 'projects' | 'about', origin?: HTMLButtonElement | null) => {
+    panelOrigin.current = origin ?? (section === 'projects' ? projectsButton.current : aboutButton.current)
     setPlayback(null)
-    setPanelOpen(true)
+    setPanel(section)
   }
 
-  const closeProjects = () => {
+  const closePanel = () => {
+    const origin = panelOrigin.current
     setPlayback(null)
-    setPanelOpen(false)
-    requestAnimationFrame(() => projectsButton.current?.focus())
+    setPanel(null)
+    requestAnimationFrame(() => origin?.focus())
   }
 
   const selectProject = (index: number) => {
@@ -44,7 +49,8 @@ export default function App() {
         </a>
         <nav className={styles.nav} aria-label="Navegación principal">
           <button type="button" onClick={resetView} className={styles.navCurrent}>Inicio <span>(Taller)</span></button>
-          <button ref={projectsButton} type="button" onClick={openProjects}>Proyectos <span>(Monitor)</span></button>
+          <button ref={projectsButton} type="button" onClick={() => openPanel('projects')}>Proyectos <span>(Monitor)</span></button>
+          <button ref={aboutButton} type="button" onClick={() => openPanel('about')}>Sobre mí <span>(Cuaderno)</span></button>
         </nav>
         <span className={styles.issue}>Edición 01 / 2026</span>
       </header>
@@ -55,7 +61,8 @@ export default function App() {
           <h1 id="main-title">Taller{' '}<em>isométrico.</em></h1>
           <p className={styles.introCopy}>Soy Cristian Cabrera. Este es mi espacio de trabajo digital para explorar diseño, código y experiencias web en 3D.</p>
           <div className={styles.actions}>
-            <button type="button" onClick={openProjects} className={styles.primary}>Explorar proyectos <span aria-hidden="true">↗</span></button>
+            <button type="button" onClick={(event) => openPanel('projects', event.currentTarget)} className={styles.primary}>Explorar proyectos <span aria-hidden="true">↗</span></button>
+            <button type="button" onClick={(event) => openPanel('about', event.currentTarget)} className={styles.secondary}>Sobre mí</button>
           </div>
         </section>
 
@@ -67,12 +74,13 @@ export default function App() {
                 <Suspense fallback={null}>
                   <Studio
                     reset={reset}
+                    onOpenNotebook={() => openPanel('about')}
                     onReady={sceneReady}
                     onFailure={sceneFailed}
                     monitor={{
                       selected,
                       playing: playback === 'monitor',
-                      onOpen: openProjects,
+                      onOpen: () => openPanel('projects'),
                       onSelect: selectProject,
                       onPlay: () => setPlayback('monitor'),
                       onStop: stopPlayback,
@@ -102,16 +110,18 @@ export default function App() {
         </section>
       </main>
 
-      {panelOpen && (
+      {panel === 'projects' && (
         <ProjectsPanel
           selected={selected}
           playing={playback === 'panel'}
           onSelect={selectProject}
           onPlay={() => setPlayback('panel')}
           onStop={stopPlayback}
-          onClose={closeProjects}
+          onClose={closePanel}
         />
       )}
+
+      {panel === 'about' && <AboutPanel onClose={closePanel} />}
 
       <footer className={styles.footer}><span>© 2026 Cristian Cabrera</span><span>React Three Fiber <b>·</b> Three.js <b>·</b> TypeScript</span></footer>
     </div>

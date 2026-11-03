@@ -3,9 +3,10 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, Text } from '@react-three/drei'
 import { OrthographicCamera } from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
-import { Box, Chair, Desk, palette, Plant, Room } from '@/scenes/Furniture'
+import { Chair, Desk, Plant, Room } from '@/scenes/Furniture'
 import { Lighting } from '@/scenes/Lighting'
 import { Monitor, type MonitorControls } from '@/scenes/Monitor'
+import { Notebook } from '@/scenes/Notebook'
 import studioFont from '@fontsource/space-mono/files/space-mono-latin-400-normal.woff?url'
 
 const initialPosition: [number, number, number] = [9, 7.2, 11]
@@ -68,11 +69,12 @@ function SceneStatus({ onReady, onFailure }: { onReady: () => void; onFailure: (
 type StudioProps = {
   reset: number
   monitor: MonitorControls
+  onOpenNotebook: () => void
   onReady: () => void
   onFailure: () => void
 }
 
-export default function Studio({ reset, monitor, onReady, onFailure }: StudioProps) {
+export default function Studio({ reset, monitor, onOpenNotebook, onReady, onFailure }: StudioProps) {
   return (
     <Canvas
       orthographic
@@ -91,7 +93,7 @@ export default function Studio({ reset, monitor, onReady, onFailure }: StudioPro
         <Plant />
         <Text position={[-1.55, 2.74, -3.01]} font={studioFont} fontSize={0.15} color="#5b604b" letterSpacing={0.08}>WORKSPACE / 01</Text>
         <Monitor {...monitor} />
-        <Box size={[0.88, 0.1, 0.62]} position={[-1.18, 1.66, -0.05]} color={palette.sage} />
+        <Notebook onOpen={onOpenNotebook} />
         <SceneStatus onReady={onReady} onFailure={onFailure} />
       </Suspense>
     </Canvas>
