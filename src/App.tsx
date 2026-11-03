@@ -4,10 +4,14 @@ import { ProjectsPanel } from '@/components/ProjectsPanel'
 import { SceneBoundary } from '@/components/SceneBoundary'
 import styles from './App.module.css'
 
-const Studio = lazy(() => import('@/scenes/Studio'))
+class SceneDownloadError extends Error {}
+
+const Studio = lazy(() => import('@/scenes/Studio').catch((cause) => {
+  throw new SceneDownloadError('No se pudo descargar la escena.', { cause })
+}))
 
 export default function App() {
-  const [scene, setScene] = useState<'loading' | 'ready' | 'failed'>('loading')
+  const [scene, setScene] = useState<'loading' | 'ready' | 'failed' | 'downloadFailed'>('loading')
   const [reset, setReset] = useState(0)
   const [panel, setPanel] = useState<'projects' | 'about' | null>(null)
   const [selected, setSelected] = useState(0)
@@ -16,7 +20,17 @@ export default function App() {
   const aboutButton = useRef<HTMLButtonElement>(null)
   const panelOrigin = useRef<HTMLButtonElement | null>(null)
   const sceneReady = useCallback(() => setScene('ready'), [])
-  const sceneFailed = useCallback(() => setScene('failed'), [])
+  const sceneFailed = useCallback((error?: Error) => {
+    setPlayback((current) => current === 'monitor' ? null : current)
+    setScene(error instanceof SceneDownloadError ? 'downloadFailed' : 'failed')
+  }, [])
+  const sceneUnavailable = scene === 'failed' || scene === 'downloadFailed'
+
+  const retryScene = () => {
+    // A failed dynamic import stays cached for the lifetime of the page.
+    if (scene === 'downloadFailed') window.location.reload()
+    else setScene('loading')
+  }
 
   const openPanel = (section: 'projects' | 'about', origin?: HTMLButtonElement | null) => {
     panelOrigin.current = origin ?? (section === 'projects' ? projectsButton.current : aboutButton.current)
@@ -69,7 +83,7 @@ export default function App() {
         <section className={styles.stage} aria-label="Escena del taller" aria-busy={scene === 'loading'}>
           <div className={styles.stageTop}><span><span className={styles.dot} /> Taller / 01</span><span>Vista isométrica</span></div>
           <div className={styles.sceneWrap}>
-            {scene !== 'failed' && (
+            {!sceneUnavailable && (
               <SceneBoundary onFailure={sceneFailed}>
                 <Suspense fallback={null}>
                   <Studio
@@ -92,10 +106,10 @@ export default function App() {
             {scene === 'loading' && (
               <p role="status" className={styles.sceneMessage}><span className={styles.loader} /> Preparando el taller…</p>
             )}
-            {scene === 'failed' && (
+            {sceneUnavailable && (
               <div className={styles.sceneMessage}>
                 <p role="status">No se pudo cargar la escena 3D.</p>
-                <button type="button" className={styles.secondary} onClick={() => setScene('loading')}>Reintentar</button>
+                <button type="button" className={styles.secondary} onClick={retryScene}>Reintentar</button>
               </div>
             )}
           </div>

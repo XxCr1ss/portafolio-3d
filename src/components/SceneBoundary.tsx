@@ -2,7 +2,7 @@ import { Component, type ReactNode } from 'react'
 
 type Props = {
   children: ReactNode
-  onFailure: () => void
+  onFailure: (error: Error) => void
 }
 
 export class SceneBoundary extends Component<Props, { failed: boolean }> {
@@ -12,8 +12,8 @@ export class SceneBoundary extends Component<Props, { failed: boolean }> {
     return { failed: true }
   }
 
-  componentDidCatch() {
-    this.props.onFailure()
+  componentDidCatch(error: Error) {
+    this.props.onFailure(error)
   }
 
   render() {
