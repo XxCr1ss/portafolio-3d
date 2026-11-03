@@ -40,7 +40,7 @@
 .kicker { display: flex; align-items: center; gap: 10px; margin: 0; font-size: .72rem; color: #5d624f; text-transform: uppercase; letter-spacing: .13em; }
 .dot { display: inline-block; flex: 0 0 auto; width: 7px; height: 7px; border-radius: 50%; background: #6b7956; }
 .intro h1 { font-size: clamp(3rem, 6.5vw, 6.2rem); letter-spacing: -.095em; line-height: .98; margin: 21px 0 25px; font-weight: 800; }
-.intro h1 em { font-style: normal; color: #526047; }
+.intro h1 em { display: block; font-style: normal; color: #526047; }
 .introCopy { max-width: 35ch; margin: 0; color: var(--muted); line-height: 1.72; font-size: clamp(.97rem, 1.25vw, 1.12rem); }
 .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 27px; }
 .primary, .secondary { min-height: 44px; padding: 9px 14px; border-radius: 8px; font-weight: 800; font-size: .86rem; cursor: pointer; }
@@ -92,8 +92,7 @@
   .nav button span { display: none; }
   .layout { grid-template-columns: minmax(0, 1fr); gap: 20px; padding-block: 24px; }
   .intro h1 { font-size: clamp(3rem, 11vw, 5rem); margin: 12px 0 14px; }
-  .intro h1 br { display: none; }
-  .intro h1 em::before { content: " "; }
+  .intro h1 em { display: inline; margin-inline-start: .12em; }
   .introCopy { max-width: 46ch; font-size: .92rem; }
   .actions { margin-top: 16px; }
   .stage { height: clamp(330px, 60dvh, 470px); border-radius: 14px; }

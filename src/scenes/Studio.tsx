@@ -5,6 +5,7 @@ import { OrthographicCamera } from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import { Box, Chair, Desk, palette, Plant, Room } from '@/scenes/Furniture'
 import { Lighting } from '@/scenes/Lighting'
+import { Monitor, type MonitorControls } from '@/scenes/Monitor'
 import studioFont from '@fontsource/space-mono/files/space-mono-latin-400-normal.woff?url'
 
 const initialPosition: [number, number, number] = [9, 7.2, 11]
@@ -14,7 +15,7 @@ const glOptions = { antialias: true, alpha: true, powerPreference: 'high-perform
 
 function StudioCamera({ reset }: { reset: number }) {
   const controls = useRef<OrbitControlsImpl>(null)
-  const { size, invalidate } = useThree()
+  const { size, invalidate, gl } = useThree()
   const fitZoom = Math.min(size.width / 11.2, size.height / 8.2)
 
   useLayoutEffect(() => {
@@ -34,6 +35,7 @@ function StudioCamera({ reset }: { reset: number }) {
     <OrbitControls
       ref={controls}
       makeDefault
+      domElement={gl.domElement}
       enablePan={false}
       enableDamping={false}
       minAzimuthAngle={0.28}
@@ -65,11 +67,12 @@ function SceneStatus({ onReady, onFailure }: { onReady: () => void; onFailure: (
 
 type StudioProps = {
   reset: number
+  monitor: MonitorControls
   onReady: () => void
   onFailure: () => void
 }
 
-export default function Studio({ reset, onReady, onFailure }: StudioProps) {
+export default function Studio({ reset, monitor, onReady, onFailure }: StudioProps) {
   return (
     <Canvas
       orthographic
@@ -87,7 +90,7 @@ export default function Studio({ reset, onReady, onFailure }: StudioProps) {
         <Chair />
         <Plant />
         <Text position={[-1.55, 2.74, -3.01]} font={studioFont} fontSize={0.15} color="#5b604b" letterSpacing={0.08}>WORKSPACE / 01</Text>
-        <Box size={[2.02, 1.17, 0.13]} position={[0.34, 2.48, -1.25]} color={palette.ink} />
+        <Monitor {...monitor} />
         <Box size={[0.88, 0.1, 0.62]} position={[-1.18, 1.66, -0.05]} color={palette.sage} />
         <SceneStatus onReady={onReady} onFailure={onFailure} />
       </Suspense>

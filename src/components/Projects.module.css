@@ -1,0 +1,23 @@
+.body { padding: clamp(15px, 4vw, 28px); }
+.selector { display: flex; gap: 9px; align-items: center; margin-bottom: 14px; font-size: .9rem; font-weight: 800; }
+.selector select { min-width: 0; max-width: 100%; padding: 5px 8px; font: inherit; color: inherit; }
+.media, .compactMedia { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #d9cbb4; }
+.media { border-radius: 10px; }
+.media img, .media video, .compactMedia img, .compactMedia video { width: 100%; height: 100%; display: block; object-fit: cover; }
+.mediaButton { position: absolute; right: 10px; bottom: 10px; display: inline-flex; align-items: center; gap: 7px; padding: 9px 12px; min-height: 44px; border-radius: 6px; border: 1px solid #465440; background: #293727; color: #fff8eb; cursor: pointer; font-weight: 800; font-size: .84rem; }
+.mediaButton:hover { background: #435540; }
+.mediaError { position: absolute; inset: auto 8px 5px; width: fit-content; margin: 0; padding: 4px 7px; background: #f6ead6; border-radius: 4px; font-size: .75rem; }
+.detail h3 { margin: 18px 0 7px; font-size: 1.37rem; letter-spacing: -.035em; }
+.detail p { margin: 0; color: #535747; line-height: 1.55; }
+.tags { padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 0; }
+.tags li { border-radius: 4px; padding: 4px 8px; background: #e7e6d6; color: #424b39; font-size: .76rem; font-weight: 800; }
+.links { display: flex; gap: 9px 16px; flex-wrap: wrap; margin-top: 17px; }
+.links a { color: #3e513a; font-weight: 800; text-underline-offset: 3px; }
+
+.screen { width: 187px; height: 104px; display: flex; flex-direction: column; overflow: hidden; color: #fff8eb; background: #273327; font: 800 12px Manrope, sans-serif; }
+.screenHeader { display: flex; align-items: center; justify-content: space-between; gap: 3px; min-height: 25px; padding: 2px 5px; }
+.screenHeader select { width: 95px; min-width: 0; padding: 0; font: inherit; }
+.screenTitle { border: 0; padding: 2px 5px; border-radius: 3px; color: #fff8eb; background: #495b40; font: inherit; cursor: pointer; }
+.screenTitle:hover { background: #6c7a55; }
+.compactMedia { flex: 1; min-height: 0; }
+.compactMedia .mediaButton { right: 4px; bottom: 4px; min-height: 0; padding: 3px 6px; font-size: 12px; }
