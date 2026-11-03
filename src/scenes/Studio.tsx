@@ -1,8 +1,7 @@
-import { Suspense, useEffect, useLayoutEffect, useRef } from 'react'
+import { Suspense, useEffect, useLayoutEffect, useRef, type ComponentRef } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, Text } from '@react-three/drei'
 import { OrthographicCamera } from 'three'
-import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import { Chair, Desk, Plant, Room } from '@/scenes/Furniture'
 import { Lighting } from '@/scenes/Lighting'
 import { Monitor, type MonitorControls } from '@/scenes/Monitor'
@@ -15,7 +14,7 @@ const cameraOptions = { position: initialPosition, near: 0.1, far: 70 }
 const glOptions = { antialias: true, alpha: true, powerPreference: 'high-performance' } as const
 
 function StudioCamera({ reset }: { reset: number }) {
-  const controls = useRef<OrbitControlsImpl>(null)
+  const controls = useRef<ComponentRef<typeof OrbitControls>>(null)
   const { size, invalidate, gl } = useThree()
   const fitZoom = Math.min(size.width / 11.2, size.height / 8.2)
 

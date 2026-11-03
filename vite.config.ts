@@ -7,4 +7,17 @@ export default defineConfig({
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
+  build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          includeDependenciesRecursively: false,
+          groups: [
+            { name: 'three-core', test: /[\\/]three[\\/]build[\\/]three\.core\.js$/ },
+            { name: 'three-renderer', test: /[\\/]three[\\/]build[\\/]three\.module\.js$/ },
+          ],
+        },
+      },
+    },
+  },
 })
