@@ -1,0 +1,5 @@
+body { margin: 0; }
+.app { min-height: 100dvh; background: #eee6d7; font-family: Manrope, sans-serif; }
+.stage { height: 100dvh; position: relative; }
+.sceneMessage { position: absolute; z-index: 2; inset: 50% auto auto 50%; transform: translate(-50%, -50%); text-align: center; }
+.reset { position: absolute; bottom: 24px; left: 24px; }
